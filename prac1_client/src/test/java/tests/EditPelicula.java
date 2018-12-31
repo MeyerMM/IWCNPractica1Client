@@ -16,7 +16,7 @@ import junit.framework.Assert;
 
 @SuppressWarnings("deprecation")
 public class EditPelicula {
-    Pelicula peli = new Pelicula();
+   /* Pelicula peli = new Pelicula();
     
     @Before
     public void startBrowser() {
@@ -69,5 +69,5 @@ public class EditPelicula {
     @After
     public void tearDown() {
         EnvironmentManager.shutDownDriver();
-    }
+    }*/
 }

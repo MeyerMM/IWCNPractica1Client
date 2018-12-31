@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import com.iw.pract1c.models.User;
 import com.iw.pract1c.repositories.UserRepository;
 
+import java.util.Objects;
+
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider{
 	@Autowired
@@ -18,27 +20,23 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 
 	@Override
 	public Authentication authenticate(Authentication authentication) {
-		
+
 		String username = authentication.getName();
 		String password = authentication.getCredentials().toString();
-		
+
 		User user;
-		try {
-			user = userRepository.findByName(username);
-		} catch(Exception e) {
+		user = userRepository.findByName(username);
+		if(Objects.isNull(user)){
 			throw new BadCredentialsException("User not found");
 		}
-		
-		if (passwordEncoder().matches(password, user.getPassword())) {
+		if (new BCryptPasswordEncoder().matches(password, user.getPassword())) {
 			return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
-		} else {
+		}
+		else{
 			throw new BadCredentialsException("Wrong password");
 		}
 	}
-	
-	public PasswordEncoder passwordEncoder() {
-	    return new BCryptPasswordEncoder();
-	}
+
 
 	@Override
 	public boolean supports(Class<?> arg0) {

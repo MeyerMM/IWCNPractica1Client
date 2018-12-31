@@ -16,7 +16,7 @@ import junit.framework.Assert;
 
 @SuppressWarnings("deprecation")
 public class DeletePelicula {
-    Pelicula peli = new Pelicula();
+  /*  Pelicula peli = new Pelicula();
     
     int oldnumProducts = 0;
     
@@ -64,5 +64,5 @@ public class DeletePelicula {
     @After
     public void tearDown() {
         EnvironmentManager.shutDownDriver();
-    }
+    }*/
 }
