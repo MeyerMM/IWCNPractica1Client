@@ -1,73 +1,46 @@
 package tests;
 
-import java.util.Objects;
-
-import org.junit.After;
-import org.junit.Before;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import com.iw.pract1c.models.Pelicula;
+import com.iw.pract1c.models.User;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import environment.EnvironmentManager;
 import environment.RunEnvironment;
-import junit.framework.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
-@SuppressWarnings("deprecation")
-public class AddPelicula {
-    Pelicula peli = new Pelicula();
-    
-    @Before
-    public void startBrowser() {
-//        EnvironmentManager.initChromeWebDriver();
-        EnvironmentManager.initFirefoxWebDriver();
+
+public class addPelicula {
+    User user = new User();
+    Pelicula movie = new Pelicula();
+
+    @Given("^I have a movie <Pelicula>$")
+    public void i_have_a_movie_Pelicula() throws Throwable {
+        movie.setName("Robocop");
     }
 
-    @Given("^I have a film <Pelicula>$")
-    public void i_have_a_film_Pelicula() throws Throwable {
-        peli.setCode(99);
-        peli.setName("Scarface");
-        peli.setTrailer("https://www.youtube.com/watch?v=7pQQHnqBa2E");
-        peli.setInfo("In Miami in 1980, a determined Cuban immigrant takes over a drug cartel and succumbs to greed.");
-        peli.setYear(1983);
-        peli.setDirector("Brian De Palma");
-        peli.setReparto("Al Pacino, Steven Bauer, Michelle Pfeiffer, Mary Elizabeth Mastrantonio, Robert Loggia, Miriam Colon, F. Murray Abraham");
-        peli.setPortada("https://is5-ssl.mzstatic.com/image/thumb/Video/5d/b3/9a/mzl.pfdbgmnr.jpg/268x0w.jpg");
-        peli.setRate(3.9f);
-        peli.setGenre("Crime,Drama");
-    }
-
-    @When("^Save the film <Pelicula>$")
-    public void save_the_film_Peliucla() throws Throwable {
-    	WebDriver driver = RunEnvironment.getWebDriver();
-    	driver.get("http://localhost:8080/listFilms");
-
-        // add product
-        driver.findElement(By.id("add")).click();
-        
-        driver.findElement(By.id("code")).sendKeys(Objects.toString(peli.getCode(), null));
-        driver.findElement(By.id("name")).sendKeys(peli.getName());
-        driver.findElement(By.id("trailer")).sendKeys(peli.getTrailer());
-        driver.findElement(By.id("info")).sendKeys(peli.getInfo());
-        driver.findElement(By.id("year")).sendKeys(Integer.toString(peli.getYear()));
-        driver.findElement(By.id("director")).sendKeys(peli.getDirector());
-        driver.findElement(By.id("cast")).sendKeys(peli.getReparto());
-        driver.findElement(By.id("portada")).sendKeys(peli.getPortada());
-        driver.findElement(By.id("rate")).sendKeys(Float.toString(peli.getRate()));
-        driver.findElement(By.id("genre")).sendKeys(peli.getGenre());
-        
-        driver.findElement(By.id("add")).click();
-    }
-
-    @Then("^Returns <Pelicula>$")
-    public void returns_Pelicula() throws Throwable {
+    @Then("^Get to Movie Management Index$")
+    public void get_to_Movie_Management_Index() throws Throwable {
         WebDriver driver = RunEnvironment.getWebDriver();
-        Assert.assertEquals(Integer.toString(99),driver.getTitle());
+        driver.get("http://127.0.0.1:8080/listFilms");
+        user.setName("root");
+        user.setPassword("root");
+        driver.findElement(By.name("username")).sendKeys(user.getName());
+        driver.findElement(By.name("password")).sendKeys("root");
+        driver.findElement(By.tagName("button")).click();
     }
-    
-    @After
-    public void tearDown() {
-        EnvironmentManager.shutDownDriver();
+
+    @When("^Save the movie <Pelicula>$")
+    public void save_the_movie_Pelicula() throws Throwable {
+        WebDriver driver = RunEnvironment.getWebDriver();
+        driver.findElement(By.name("addFilm")).click();
+        driver.findElement(By.id("name")).sendKeys(movie.getName());
+        driver.findElement(By.name("add")).click();
+    }
+
+    @Then("^Validate <Pelicula>$")
+    public void validate_Pelicula() throws Throwable {
+        WebDriver driver = RunEnvironment.getWebDriver();
+        assert driver.findElements(By.name(movie.getName())).size() == 1;
     }
 }
